@@ -1,3 +1,12 @@
+
+/*
+
+  * Initials & Surname: NRW HLONGWANE
+  * Student No: 3944789
+  * Practical: 2
+
+*/
+
 import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
