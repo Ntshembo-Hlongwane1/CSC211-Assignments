@@ -21,6 +21,7 @@ public class Part1_solution {
 
   public static void fileReader() throws FileNotFoundException {
 
+    // Reading file in the same directory
     File file = new File("data1.txt");
     Scanner scan = new Scanner(file);
     HashMap<Character, Boolean> seenMap = new HashMap<Character, Boolean>();
@@ -43,6 +44,7 @@ public class Part1_solution {
       seenMap.clear();
     }
     try {
+      // Writting on file in the same directory
       FileWriter writer = new FileWriter("data2.txt");
       writer.write(finalString);
       writer.close();

@@ -18,6 +18,7 @@ public class Part2_solution {
   }
 
   public static String matchFinder() throws FileNotFoundException {
+    // Reading file in the same directory
     File file = new File("data2.txt");
     Scanner scan = new Scanner(file);
 
