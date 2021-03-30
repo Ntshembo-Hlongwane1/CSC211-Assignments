@@ -15,18 +15,15 @@ public class Part2_solution {
     Scanner input = new Scanner(System.in);
     System.out.println("Enter in an English word see if you can find a match: ");
     String userInput = input.nextLine();
-
+    input.close();
     while (scan.hasNextLine()) {
-      // System.out.println(scan.nextLine());
       Boolean isMatched = wordMatcher(scan.nextLine(), userInput);
-
       if (isMatched) {
         return "Matched";
       }
     }
-    String result = "Unmatched! " + "'" + userInput + "'" + " does not exist";
     scan.close();
-    input.close();
+    String result = "Unmatched! " + "'" + userInput + "'" + " does not exist";
     return result;
   }
 
