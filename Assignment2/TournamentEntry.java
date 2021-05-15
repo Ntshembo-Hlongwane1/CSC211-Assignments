@@ -1,83 +1,75 @@
-public class TournamentEntry {
+import java.util.Scanner;
+
+public class TournamentEntry extends DynamicSorting {
   Node head;
 
-  private class Team {
-    String teamName;
-    int teamNumber;
-    double finalScore;
-    long regYear;
-    int firstScore;
-    int secondScore;
+  public void registerTeam() {
 
-    Team(String teamName, int teamNumber, long regYear, int firstScore, int secondYear) {
-      this.teamName = teamName;
-      this.teamNumber = teamNumber;
-      this.regYear = regYear;
-      this.firstScore = firstScore;
-      this.secondScore = secondYear;
+    Scanner scanner = new Scanner(System.in);
+
+    System.out.println("How many elements do you want add? ");
+    int numberOfElements = Integer.parseInt(scanner.next());
+    int iteration = 1;
+
+    while (iteration <= numberOfElements) {
+
+      System.out.println("Enter the team name you want to register: ");
+      String teamName = scanner.next();
+
+      System.out.println("Enter the team number for the team: ");
+      int teamNumber = Integer.parseInt(scanner.next());
+
+      System.out.println("Enter the team year of registeration: ");
+      long regYear = scanner.nextLong();
+
+      System.out.println("Enter the team first score: ");
+      int firstScore = Integer.parseInt(scanner.next());
+
+      System.out.println("Enter the team second score: ");
+      int secondScore = Integer.parseInt(scanner.next());
+
+      Node newTeam = createNode(teamName, teamNumber, regYear, firstScore, secondScore);
+      System.out.println("New team was created, adding to List Now....");
+
+      insertionAtEnd(newTeam);
+      System.out.println("New team added to list...");
+
+      iteration++;
+
     }
+    // scanner.close();
   }
 
-  private class Node {
+  public void insertBefore(int teamNumber, Node newTeam) {
+    int teamIndex = searchIndexByTeamNumber(teamNumber);
 
-    Team team;
-    Node nextNode;
-
-    Node(String teamName, int teamNumber, long regYear, int firstScore, int secondYear) {
-      this.team = new Team(teamName, teamNumber, regYear, firstScore, secondYear);
-      this.nextNode = null;
-    }
-
-  }
-
-  /**
-   * Part A --> LINKED LIST
-   * 
-   * @param teamName
-   * @param teamNumber
-   * @param regYear
-   * @param firstScore
-   * @param secondYear
-   **/
-  public void registerTeam(String teamName, int teamNumber, long regYear, int firstScore, int secondYear) {
-
-    Node newTeam = createNode(teamName, teamNumber, regYear, firstScore, secondYear);
-    if (head == null) {
+    if (teamIndex == 0) {
       newTeam.nextNode = head;
       head = newTeam;
       return;
     }
 
-    Node currentNode = head;
-
-    while (currentNode.nextNode != null) {
-      currentNode = currentNode.nextNode;
-    }
-    currentNode.nextNode = newTeam;
-  }
-
-  public void Display() {
-
-    if (head == null) {
+    if (teamIndex != -1) {
+      int count = 0;
+      Node previousNode = head;
+      while (count < teamIndex - 1) {
+        count++;
+        previousNode = previousNode.nextNode;
+      }
+      Node currentNode = previousNode.nextNode;
+      newTeam.nextNode = currentNode;
+      previousNode.nextNode = newTeam;
       return;
     }
-
-    Node currentNode = head;
-
-    while (currentNode != null) {
-      System.out
-          .print("{teamName: " + currentNode.team.teamName + ", teamNumber: " + currentNode.team.teamNumber + "} --> ");
-      currentNode = currentNode.nextNode;
-    }
-    System.out.println("null");
   }
 
-  public Node deregister_Last_team() {
+  public Node deregister_last_team() {
     if (head == null) {
       return head;
     }
 
     Node currentNode = head;
+
     while (currentNode.nextNode.nextNode != null) {
       currentNode = currentNode.nextNode;
     }
@@ -95,6 +87,7 @@ public class TournamentEntry {
     }
 
     if (teamIndex == -1) {
+      System.out.println("Team with this team number: " + "'" + teamNumber + "'" + " is not registered...");
       return head;
     }
 
@@ -113,12 +106,46 @@ public class TournamentEntry {
 
   }
 
+  public int tournamentEntrySize() {
+    int tournamentSize = 0;
+
+    Node currentNode = head;
+    while (currentNode != null) {
+      tournamentSize++;
+      currentNode = currentNode.nextNode;
+    }
+    return tournamentSize;
+  }
+
+  public void Display() {
+
+    if (head == null) {
+      return;
+    }
+
+    Node currentNode = head;
+    System.out.println("\n");
+    while (currentNode != null) {
+      System.out.println(currentNode.team.teamName + " " + currentNode.team.teamNumber + " " + currentNode.team.regYear
+          + " " + currentNode.team.firstScore + " " + currentNode.team.secondScore);
+      currentNode = currentNode.nextNode;
+    }
+
+  }
+
+  public void sort(Node head) {
+    Node sortedlist = mergeSort(head);
+    lazyDisplay(sortedlist);
+  }
+
+  // HELPER FUNCTIONS
+
   public int searchIndexByTeamNumber(int teamNumber) {
     int index = 0;
     boolean positionFound = false;
 
-    if (head == null) {
-      return -1;
+    if (head == null || head.nextNode == null) {
+      return index;
     }
 
     Node currentNode = head;
@@ -135,64 +162,29 @@ public class TournamentEntry {
     return positionFound ? index : -1;
   }
 
-  public void insertBefore(int teamNumber, Node newTeam) {
-    int teamIndex = searchIndexByTeamNumber(teamNumber);
+  public Node createNode(String teamName, int teamNumber, long regYear, int firstScore, int secondScore) {
+    Node newTeam = new Node(teamName, teamNumber, regYear, firstScore, secondScore);
 
-    if (teamIndex == 0 || head == null) {
+    return newTeam;
+  }
+
+  private void insertionAtEnd(Node newTeam) {
+
+    if (head == null) {
       newTeam.nextNode = head;
       head = newTeam;
       return;
     }
 
-    if (teamIndex != -1) {
-      int count = 0;
-      Node previousNode = head;
-      while (count < teamIndex - 1) {
-        count++;
-        previousNode = previousNode.nextNode;
-      }
-      Node currentNode = previousNode.nextNode;
-      newTeam.nextNode = currentNode;
-      previousNode.nextNode = newTeam;
-      return;
-    }
+    Node curreNode = head;
 
-    Node currentNode = head;
-
-    while (currentNode.nextNode != null) {
-      currentNode = currentNode.nextNode;
+    while (curreNode.nextNode != null) {
+      curreNode = curreNode.nextNode;
     }
-    currentNode.nextNode = newTeam;
-    return;
+    curreNode.nextNode = newTeam;
   }
 
-  public Node createNode(String teamName, int teamNumber, long regYear, int firstScore, int secondYear) {
-    Node newTeam = new Node(teamName, teamNumber, regYear, firstScore, secondYear);
-    return newTeam;
-  }
-
-  public int tournamentEntrySize() {
-    int tournamentSize = 0;
-    Node currentNode = head;
-
-    if (head == null) {
-      return tournamentSize;
-    }
-
-    while (currentNode != null) {
-      currentNode = currentNode.nextNode;
-      tournamentSize++;
-    }
-    return tournamentSize;
-  }
-  // ================================================End of
-  // PartA=====================================
-
-  /**
-   * Part B --> Sorting
-   **/
-
-  public void computeFinalScore() {
+  private void computeFinalScore() {
     Node currentNode = head;
 
     while (currentNode != null) {
@@ -202,19 +194,59 @@ public class TournamentEntry {
     }
   }
 
-  public Node sortedMerge(Node left, Node right) {
-    Node result = null;
+  public void lazyRegister(String teamName, int teamNumber, long regYear, int firstScore, int secondScore) {
 
-    if (left == null) {
+    Node newTeam = createNode(teamName, teamNumber, regYear, firstScore, secondScore);
+    insertionAtEnd(newTeam);
+  }
+
+  private void insertionAtHead(Node team) {
+    team.nextNode = head;
+    head = team;
+  }
+
+  private Node mergeSort(Node head) {
+    computeFinalScore();
+    if (head == null || head.nextNode == null) {
+      return head;
+    }
+
+    Node middle = getMiddle(head);
+    Node nextofmiddle = middle.nextNode;
+
+    middle.nextNode = null;
+
+    Node left = mergeSort(head);
+
+    Node right = mergeSort(nextofmiddle);
+
+    Node sortedlist = sortedMerge(left, right);
+    return sortedlist;
+  }
+
+  private Node getMiddle(Node head) {
+    if (head == null)
+      return head;
+
+    Node slow = head, fast = head;
+
+    while (fast.nextNode != null && fast.nextNode.nextNode != null) {
+      slow = slow.nextNode;
+      fast = fast.nextNode.nextNode;
+    }
+    return slow;
+  };
+
+  private Node sortedMerge(Node left, Node right) {
+    Node result = null;
+    if (left == null)
       return right;
-    }
-    if (right == null) {
+    if (right == null)
       return left;
-    }
 
     if (left.team.finalScore < right.team.finalScore) {
-      result = left;
-      result.nextNode = sortedMerge(left.nextNode, right);
+      result = right;
+      result.nextNode = sortedMerge(left, right.nextNode);
     } else if (left.team.finalScore == right.team.finalScore) {
       if (left.team.teamName.compareTo(right.team.teamName) < 0) {
         result = left;
@@ -232,82 +264,48 @@ public class TournamentEntry {
         }
       }
     } else {
-      result = right;
-      result.nextNode = sortedMerge(left, right.nextNode);
+      result = left;
+      result.nextNode = sortedMerge(left.nextNode, right);
     }
     return result;
   }
 
-  public Node getMiddle(Node head) {
+  public void lazyDisplay(Node head) {
     if (head == null) {
-      return head;
+      return;
     }
 
-    Node slow = head;
-    Node fast = head;
-
-    while (fast.nextNode != null && fast.nextNode.nextNode != null) {
-      slow = slow.nextNode;
-      fast = fast.nextNode.nextNode;
+    Node currentNode = head;
+    System.out.println("\n");
+    while (currentNode != null) {
+      System.out.println(currentNode.team.teamName + " " + currentNode.team.teamNumber + " " + currentNode.team.regYear
+          + " " + currentNode.team.firstScore + " " + currentNode.team.secondScore + " " + currentNode.team.finalScore);
+      currentNode = currentNode.nextNode;
     }
-    return slow;
   }
 
-  public Node mergeSort(Node head) {
-    if (head == null || head.nextNode == null) {
-      return head;
-    }
-    Node middle = getMiddle(head);
-    Node nextofmiddle = middle.nextNode;
-    middle.nextNode = null;
-    Node left = mergeSort(head);
-    Node right = mergeSort(nextofmiddle);
-    Node sortedlist = sortedMerge(left, right);
-    Node reversedList = reverse(sortedlist);
-    return reversedList;
-  }
-
-  public Node reverse(Node LinkedList) {
-    Node previous = null;
-    Node current = LinkedList;
-    Node next = null;
-
-    while (current != null) {
-      next = current.nextNode;
-      current.nextNode = previous;
-      previous = current;
-      current = next;
-    }
-    return previous;
-  }
-
+  // MAIN FUNCTION
   public static void main(String[] args) {
-    TournamentEntry tourney = new TournamentEntry();
-    tourney.registerTeam("DX", 123, 1876, 721, 1200);
-    tourney.registerTeam("SBK", 222, 1976, 111, 1100);
-    tourney.registerTeam("JKB", 122, 1996, 111, 1100);
-    tourney.registerTeam("ACE", 122, 1996, 111, 1100);
-    tourney.registerTeam("ACE", 100, 1996, 111, 1100);
+    // TournamentEntry tourney = new TournamentEntry();
 
+    // // Default teams for when lazy to type register team helper function
+    // // lazyRegister
+    // tourney.lazyRegister("Able", 8, 2001, 48, 55);
+    // tourney.lazyRegister("dragon", 9, 2005, 80, 70);
+    // tourney.lazyRegister("Chelsea", 6, 1978, 88, 95);
+    // tourney.lazyRegister("Able", 5, 1999, 48, 55);
+    // // tourney.registerTeam();
     // tourney.Display();
-    // Node removedTeam2 = tourney.deregister_Particular_team(222);
-    // // System.out.println(removedTeam2);
-    // System.out
-    // .println("{teamName: " + removedTeam2.team.teamName + ", teamNumber: " +
-    // removedTeam2.team.teamNumber + "}");
-    // tourney.Display();
-    // Node newTeam = tourney.createNode("Liquid", 321, 2000, 850, 1700);
-    // tourney.insertBefore(500, newTeam);
-    // tourney.Display();
-    // System.out.println(tourney.tournamentEntrySize());
-    tourney.computeFinalScore();
-    Node result = tourney.mergeSort(tourney.head);
 
-    while (result != null) {
-      System.out.print("{teamName: " + result.team.teamName + ", teamNumber: " + result.team.teamNumber
-          + ", finalScore: " + result.team.finalScore + "} --> ");
-      result = result.nextNode;
-    }
-    System.out.println("null");
+    // // tourney.dynamicSorting(tourney.head);
+
+    // // Helper function createNode used when insertionBefore method is needed
+    // // Node newTeam = tourney.createNode("KFC", 12, 2021, 66, 122);
+    // // tourney.insertBefore(6, newTeam);
+    // // tourney.deregister_Particular_team(6);
+    // tourney.deregister_last_team();
+    // // tourney.Display();
+    // // tourney.sort(tourney.head);
+    // tourney.Display();
   }
 }

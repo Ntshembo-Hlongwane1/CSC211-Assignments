@@ -1,0 +1,13 @@
+Functional Requirements:
+
+1. Authentication to authenticate officer to log in to system.
+
+2. ID Card validation to validate if the card is an actual valid card.
+
+3. Flagging an ID Card as lost.
+
+4. Notifiying the person via sms of the lost ID card.
+
+5. Validating issue number.
+
+6. Validating persons fingerprint too before handing in the ID back
